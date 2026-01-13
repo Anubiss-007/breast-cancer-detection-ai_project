@@ -4,11 +4,23 @@ import numpy as np
 from sklearn.datasets import load_breast_cancer
 
 # 1. โหลดโมเดล
+import os # อย่าลืมเช็คว่ามีบรรทัดนี้ด้านบนสุดหรือยัง (ปกติมีแล้ว)
+
 try:
     model = joblib.load('cancer_model.joblib')
-except:
-    st.error("ไม่พบไฟล์โมเดล cancer_model.joblib")
+except Exception as e:
+    st.error(f"เกิดข้อผิดพลาดร้ายแรง: {e}") # ให้มันบอกชื่อ Error จริงๆ
+    
+    # เช็คให้ชัวร์ว่าไฟล์หายจริงไหม?
+    if not os.path.exists('cancer_model.joblib'):
+        st.warning("ระบบหาไฟล์ไม่เจอจริงๆ ด้วย!")
+        st.write(f"โฟลเดอร์ปัจจุบันคือ: {os.getcwd()}")
+        st.write("ไฟล์ทั้งหมดที่มีในโฟลเดอร์นี้:", os.listdir('.'))
+    else:
+        st.success("แต่เอ๊ะ... ไฟล์ก็วางอยู่ตรงนี้นะ (แสดงว่าเป็นที่เวอร์ชัน Library)")
+        
     st.stop()
+
 
 # 2. โหลดข้อมูลเพื่อเอา "ค่าเฉลี่ยมาตรฐาน" มาใช้ (แทนเลข 0)
 data = load_breast_cancer()
